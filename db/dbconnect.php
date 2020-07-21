@@ -52,10 +52,21 @@ function getToDoByID($id){
     return $row;
 }
 
+function makeQuery($sql){
+  //Just a little  resuable function for performing actions on the database
+  $connect = opendb();
+    //A handy way to expose error messages to the outside scope if need be
+  if ($connect->query($sql) === TRUE) {
+    return 'success';
+  } else {
+    return 'Error: ' . $sql . $connect->error;
+  }
+  closedb($connect);
+}
+
 function newToDo($name){
   //Grab all of the items in the to_do table
     $existing = getAllToDos();
-    $connect = opendb();
     //get the last item's ID and add 1 to it
     $lastitem = end($existing);
     $id = (int)$lastitem['id'] + 1;
@@ -63,55 +74,27 @@ function newToDo($name){
 
     $sql = "INSERT INTO to_do(id, name, done)
         VALUES (". $id. ", " . $stringName .", false)";
-    
-    //a handy way to expose error messages to the outside scope if need be
-    if ($connect->query($sql) === TRUE) {
-        return 'success';
-      } else {
-        return 'Error: ' . $sql . $connect->error;
-      }
-
-    closedb($connect);
+    $result = makeQuery($sql);
+    return $result;
 }
 
 function markToDoDone($id){
-    $connect = opendb();
     $sql = 'UPDATE to_do SET done=1 WHERE id=' . (int)$id;
-    
-    if ($connect->query($sql) === TRUE) {
-        return 'success';
-      } else {
-        return 'Error: ' . $sql . $connect->error;
-      }
+    $result = makeQuery($sql);
+    return $result;
 
-    closedb($connect);
 }
 
 function unmarkToDo($id){
-  $connect = opendb();
   $sql = 'UPDATE to_do SET done=0 WHERE id=' . (int)$id;
-  
-  if ($connect->query($sql) === TRUE) {
-      return 'success';
-    } else {
-      return 'Error: ' . $sql . $connect->error;
-    }
-
-  closedb($connect);
+  $result = makeQuery($sql);
+  return $result;
 }
 
 function deleteToDo($id){
-    $connect = opendb();
-
     $sql = 'DELETE FROM to_do WHERE id='. $id;
-    
-    if ($connect->query($sql) === TRUE) {
-        return 'success';
-      } else {
-        return 'Error: ' . $sql . $connect->error;
-      }
-
-    closedb($connect);
+    $result = makeQuery($sql);
+    return $result;
 }
 
 ?>
