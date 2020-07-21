@@ -4,12 +4,12 @@
 
     //unless empty, mark all checked to-do's as done
     if (empty($_POST['toDo'])){
-        echo "No to dos!";
+        echo 'No to dos!';
     }
     else {
         foreach($_POST['toDo'] as $toDo) {
             if (markToDoDone($toDo) == 'success'){
-                header("location: ../index.php");
+                header('location: ../index.php');
             }
             else {
                 echo markToDoDone($toDo);
